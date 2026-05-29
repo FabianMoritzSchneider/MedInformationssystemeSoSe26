@@ -1,4 +1,11 @@
 {
   "name": "medInfo",
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "yarn@4.12.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mongodb": "docker run --rm -v /Users/moritz/Documents/1HTW/1SoSe-26/med-Informationssysteme/medInfo/database:/data/db -p 27017:27017 mongo:8"
+  },
+  "dependencies": {
+    "mongoose": "^9.6.3"
+  }
 }
