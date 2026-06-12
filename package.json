@@ -8,6 +8,7 @@
     "journey": "node src/fhir-client.js"
   },
   "dependencies": {
-    "mongoose": "^9.6.3"
+    "mongoose": "^9.6.3",
+    "nanoid": "^5.1.11"
   }
 }
