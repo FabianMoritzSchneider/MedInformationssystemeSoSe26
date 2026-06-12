@@ -1,0 +1,50 @@
+{
+  "resourceType": "Patient",
+  "id": "131264020",
+  "meta": {
+    "versionId": "3",
+    "lastUpdated": "2026-06-06T09:54:31.121+00:00",
+    "source": "#vvDydDTvBSG7c8Yn",
+    "tag": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationValue",
+        "code": "SUBSETTED",
+        "display": "Resource encoded in summary mode"
+      }
+    ]
+  },
+  "identifier": [
+    {
+      "type": {
+        "text": "MRN"
+      },
+      "value": "5"
+    },
+    {
+      "use": "official",
+      "type": {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code": "MR",
+            "display": "Medical Record Number"
+          }
+        ],
+        "text": "MRN"
+      },
+      "system": "http://hospital.example.org/mrn",
+      "value": "6624167887"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Morton",
+      "given": [
+        "Shannon"
+      ]
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1965-03-25"
+}

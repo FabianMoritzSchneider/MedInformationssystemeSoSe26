@@ -1,56 +1,178 @@
-// immer asynchrone Variante benutzen bei import (also mit /promises)
 import fs from 'node:fs/promises'
+import { connectMongo, closeMongo } from './db.js'
+import { PatientModel, ConditionModel } from './models.js'
+import { searchPatient, createPatient, createCondition } from './fhir-service.js'
 
-let message = 'Hello'
-const where = 'World'
-
-
-// console.log(message + ' ' + where + '!')
-console.log(`${message} ${where}!`) // bevorzugt zum oberen da übersichtlicher
-
-
-// "normale Funktion"
-function run1 () {
-    console.log(`${message} ${where}!`)
+const patientSearch = {
+  family: 'Mustermann',
+  given: 'Max',
+  birthDate: '1980-07-12',
+  identifier: {
+    system: 'http://example.org/insurance',
+    value: 'KV-123456789'
+  }
 }
 
-// Error function (Variablendeklaration mit anonymer Funktion dahinter) - funktioniert ähnlich wie function run1 () - idR hier verwendet
-const run2 = () => {
-    console.log(`${message} ${where}!`)
+const patientPayload = {
+  resourceType: 'Patient',
+  identifier: [
+    {
+      system: patientSearch.identifier.system,
+      value: patientSearch.identifier.value
+    }
+  ],
+  name: [
+    {
+      family: patientSearch.family,
+      given: [patientSearch.given]
+    }
+  ],
+  gender: 'male',
+  birthDate: patientSearch.birthDate,
+  telecom: [
+    {
+      system: 'phone',
+      value: '+49-30-1234567',
+      use: 'home'
+    }
+  ],
+  address: [
+    {
+      line: ['Musterstrasse 1'],
+      city: 'Berlin',
+      postalCode: '10115',
+      country: 'DE'
+    }
+  ]
 }
 
-// Funktion aufrufen mit Funktionsnamen()
-//run2()
+const conditionPayload = (patientId) => ({
+  resourceType: 'Condition',
+  clinicalStatus: {
+    coding: [
+      {
+        system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+        code: 'active',
+        display: 'Active'
+      }
+    ]
+  },
+  verificationStatus: {
+    coding: [
+      {
+        system: 'http://terminology.hl7.org/CodeSystem/condition-ver-status',
+        code: 'confirmed',
+        display: 'Confirmed'
+      }
+    ]
+  },
+  category: [
+    {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/condition-category',
+          code: 'encounter-diagnosis',
+          display: 'Encounter Diagnosis'
+        }
+      ]
+    }
+  ],
+  severity: {
+    coding: [
+      {
+        system: 'http://snomed.info/sct',
+        code: '24484000',
+        display: 'Severe'
+      }
+    ]
+  },
+  code: {
+    coding: [
+      {
+        system: 'http://snomed.info/sct',
+        code: '195967001',
+        display: 'Acute bronchitis'
+      }
+    ],
+    text: 'Akute Bronchitis'
+  },
+  subject: {
+    reference: `Patient/${patientId}`
+  },
+  onsetDateTime: new Date().toISOString().slice(0, 10),
+  recordedDate: new Date().toISOString(),
+  note: [
+    {
+      text: 'Diagnose aus der Notaufnahme mit Aufnahmegrund Husten und Fieber.'
+    }
+  ]
+})
 
-
-// asynchrone Funktion -> quasi wie multi threading, Teil unseres Codes kann laufen während anderer Teil noch auf Antwort vom Server wartet zB
-const getPatient = async () => {
-    const result = await fetch('https://hapi.fhir.org/baseR4/Patient/131264020') // https://hapi.fhir.org/baseR4/Patient/90286136    131284146
-    // const text = await result.text() 
-    // const json = await result.json() 
-    const patient = await result.json()
-    await fs.writeFile('patient.json', JSON.stringify(patient, undefined, 2))
-    //console.log(result)
-    // console.log(text)
-    // console.log(json)
-    console.log(patient.name[0].given[0])
-    console.log(patient.gender)
-    console.log(patient.birthDate)
+const persistPatient = async (resource) => {
+  return PatientModel.findOneAndUpdate(
+    { fhirId: resource.id },
+    {
+      resourceType: 'Patient',
+      fhirId: resource.id,
+      identifier: resource.identifier ?? [],
+      name: resource.name ?? [],
+      gender: resource.gender,
+      birthDate: resource.birthDate,
+      resource
+    },
+    { upsert: true, returnDocument: 'after' }
+  )
 }
-// wenn ein Promise zurückgegeben wird müssen wird darauf warten -> await davor!
 
-
-const getMedicationRequest = async () => {
-    const result = await fetch('https://hapi.fhir.org/baseR4/MedicationRequest/131264024') 
-    const medication = await result.json()
-    await fs.writeFile('medication.json', JSON.stringify(medication, undefined, 2))
-    console.log(medication)
+const persistCondition = async (resource) => {
+  return ConditionModel.findOneAndUpdate(
+    { fhirId: resource.id },
+    {
+      resourceType: 'Condition',
+      fhirId: resource.id,
+      patientFhirId: resource.subject?.reference?.replace(/^Patient\//, '') ?? null,
+      code: resource.code ?? {},
+      text: resource.code?.text ?? '',
+      status: resource.clinicalStatus?.coding?.[0]?.code ?? resource.verificationStatus?.coding?.[0]?.code,
+      category: resource.category ?? [],
+      resource
+    },
+    { upsert: true, returnDocument: 'after' }
+  )
 }
 
+const runJourney = async () => {
+  await connectMongo()
 
-const run = async () => {
-    await getPatient()
-    await getMedicationRequest()
+  let patientResource = null
+  const foundPatients = await searchPatient(patientSearch)
+
+  if (foundPatients.length > 0) {
+    patientResource = foundPatients[0]
+    console.log(`Patient gefunden: ${patientResource.id}`)
+  } else {
+    console.log('Patient nicht gefunden, erstelle Patient im FHIR-Testserver...')
+    patientResource = await createPatient(patientPayload)
+    console.log(`Patient angelegt: ${patientResource.id}`)
+  }
+
+  await persistPatient(patientResource)
+  console.log(`Patient in MongoDB gespeichert: ${patientResource.id}`)
+
+  const conditionResource = await createCondition(conditionPayload(patientResource.id))
+  await persistCondition(conditionResource)
+
+  console.log(`Diagnose erstellt und gespeichert: ${conditionResource.id}`)
+
+  await fs.writeFile('patient-journey-result.json', JSON.stringify({ patientResource, conditionResource }, null, 2))
+  console.log('Ergebnisdatei geschrieben: patient-journey-result.json')
 }
 
-run()
+runJourney()
+  .catch((error) => {
+    console.error('Fehler beim Patienten-Journey-Durchlauf:', error)
+  })
+  .finally(async () => {
+    await closeMongo()
+  })
+''

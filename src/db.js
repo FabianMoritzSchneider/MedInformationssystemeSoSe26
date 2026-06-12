@@ -1,33 +1,18 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
-const kittySchema = new mongoose.Schema({
-    name: String,
-    age: Number,
-    isCool: Boolean,
-    favouriteTreats: [], // Altenativ: Array
-    bestToy: {
-        name: String,
-        color: String
-    },
-    toys: [{ 
-        name: String, 
-        color: String 
-    }] 
-});
+const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/medinfo'
 
-const Kitten = mongoose.model('Kitten', kittySchema)
-
-const main = async () => {
-    const db = await mongoose.connect('mongodb://127.0.0.1:27017/test')
-    console.log('Connected ...')
-
-    const silence = new Kitten({ name: 'Silence' })
-    const r = await silence.save()
-    console.log(r)
+export const connectMongo = async () => {
+  const connection = await mongoose.connect(mongoUri, {
+    serverSelectionTimeoutMS: 5000
+  })
+  console.log(`MongoDB connected: ${connection.connection.host}`)
+  return connection
 }
 
-try {
-    main()
-} catch (e) {
-    console.log(e)
+export const closeMongo = async () => {
+  if (mongoose.connection.readyState) {
+    await mongoose.disconnect()
+    console.log('MongoDB disconnected')
+  }
 }
