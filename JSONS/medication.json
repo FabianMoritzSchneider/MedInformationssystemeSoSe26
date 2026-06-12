@@ -1,0 +1,116 @@
+{
+  "resourceType": "MedicationRequest",
+  "id": "PHOP00000012085",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2026-04-25T19:53:00.956+00:00",
+    "source": "#sU97L1ndKB1qQll6"
+  },
+  "status": "active",
+  "intent": "order",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/medication-request-category",
+          "code": "outpatient",
+          "display": "Outpatient"
+        }
+      ]
+    }
+  ],
+  "priority": "routine",
+  "medicationReference": {
+    "reference": "Medication/cfsb1758031032850",
+    "display": "PARACETAMOL 500MG TABLET"
+  },
+  "subject": {
+    "reference": "Patient/example",
+    "identifier": {
+      "system": "UHI-E",
+      "value": "A100052578"
+    },
+    "display": "الحسين أيمن سمير عثمان حسان"
+  },
+  "encounter": {
+    "reference": "Encounter/105794693"
+  },
+  "supportingInformation": [
+    {
+      "extension": [
+        {
+          "url": null,
+          "valueCoding": {
+            "code": "FAMS",
+            "display": "Family Medicine Splty"
+          }
+        },
+        {
+          "url": null,
+          "valueCoding": {
+            "system": "http://uhia.gov.eg/terminology/CodeSystem/practice-codes",
+            "code": "FAMS",
+            "display": "Family Medicine Spltyy"
+          }
+        }
+      ]
+    }
+  ],
+  "authoredOn": "2022-04-20T12:16:07",
+  "requester": {
+    "reference": "Practitioner/perismart-prac-000",
+    "display": "Khaled Ali elZend"
+  },
+  "performer": {
+    "reference": "Organization/97567465"
+  },
+  "reasonCode": [
+    {
+      "coding": [
+        {
+          "system": "http://uhia.gov.eg/terminology/CodeSystem/diagnose-code",
+          "code": "1E70",
+          "display": "Smallpox"
+        }
+      ]
+    }
+  ],
+  "dosageInstruction": [
+    {
+      "sequence": 1,
+      "text": "STAT",
+      "timing": {
+        "repeat": {
+          "duration": 1,
+          "durationUnit": "d"
+        }
+      },
+      "route": {
+        "coding": [
+          {
+            "system": "EM",
+            "code": "PO",
+            "display": "BY MOUTH"
+          },
+          {
+            "system": "http://uhia.gov.eg/terminology/CodeSystem/medication-route-of-admin",
+            "code": "HDRBE04"
+          }
+        ]
+      },
+      "doseAndRate": [
+        {
+          "doseQuantity": {
+            "value": 1,
+            "unit": "TAB",
+            "system": "http://hl7.org/fhir/v3/orderableDrugForm",
+            "code": "TAB"
+          }
+        }
+      ]
+    }
+  ],
+  "dispenseRequest": {
+    "numberOfRepeatsAllowed": 0
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "resourceType": "Patient",
+  "id": "90286136",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2026-02-09T18:38:01.664+00:00",
+    "source": "#RkKiRnP7LI3xO8j6"
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div class=\"hapiHeaderText\">NuÃ±ez <b>KARLA </b></div><table class=\"hapiPropertyTable\"><tbody><tr><td>Date of birth</td><td><span>02 January 1980</span></td></tr></tbody></table></div>"
+  },
+  "name": [
+    {
+      "family": "Karla",
+      "given": [
+        "NuÃ±ez"
+      ]
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1980-01-02"
+}

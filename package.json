@@ -1,14 +1,8 @@
 {
-  "name": "medInfo",
-  "packageManager": "yarn@4.12.0",
+  "name": "Aufgabe_1",
+  "packageManager": "yarn@4.11.0",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "mongodb": "docker run --rm -v /Users/moritz/Documents/1HTW/1SoSe-26/med-Informationssysteme/medInfo/database:/data/db -p 27017:27017 mongo:8",
-    "journey": "node src/fhir-client.js"
-  },
   "dependencies": {
-    "mongoose": "^9.6.3",
-    "nanoid": "^5.1.11"
+    "mongoose": "^9.7.0"
   }
 }
