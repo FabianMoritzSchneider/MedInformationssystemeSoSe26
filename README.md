@@ -32,5 +32,5 @@ Touchpoint: Schmerzmedikation wird verordnet, Medikationshistorie abgeglichen.
 - **Medication**: https://hl7.org/fhir/medication.html
 - **MedicationKnowledge**: https://hl7.org/fhir/medicationknowledge.html
 
-Patient resource:
+### Patient resource:
 - **Patient**: https://hl7.org/fhir/patient.html
