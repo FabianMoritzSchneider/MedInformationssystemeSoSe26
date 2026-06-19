@@ -22,3 +22,15 @@ Touchpoint: Schmerzmedikation wird verordnet, Medikationshistorie abgeglichen.
 - **/MedicationStatement?subject=.**.. — bestehende Medikation abfragen
 - **/MedicationRequest**— neue Verordnung
 - **/Bundle (transaction)** — MedicationRequest + Provenance atomar
+
+
+### Medication resources:
+- **MedicationRequest**: https://hl7.org/fhir/medicationrequest.html
+- **MedicationAdministration**: https://hl7.org/fhir/medicationadministration.html
+- **MedicationDispense**: https://hl7.org/fhir/medicationdispense.html
+- **MedicationStatement**: https://hl7.org/fhir/medicationstatement.html
+- **Medication**: https://hl7.org/fhir/medication.html
+- **MedicationKnowledge**: https://hl7.org/fhir/medicationknowledge.html
+
+Patient resource:
+- **Patient**: https://hl7.org/fhir/patient.html
