@@ -34,6 +34,18 @@ const searchPatients = async (id) => {
     return bundle.entry.map(entry => entry.resource)
 }
 
+const searchPatientsBirthdate = async (birthdate) => {
+    const endpoint = 'https://hapi.fhir.org/baseR4/Patient/_search'
+    const request = `${endpoint}?_birthdate=${birthdate}`
+    const result = await fetch(request)
+    const bundle = await result.json()
+    if (bundle.total==0) 
+        return []
+    //return bundle
+    return bundle.entry.map(entry => entry.resource)
+}
+// Patient.​birthDate 1965-03-25
+
 const searchMedicationForPatients = async (patientId) => {
     const endpoint = 'https://hapi.fhir.org/baseR4/MedicationRequest/_search'
     const request = `${endpoint}?subject=${patientId}`
@@ -85,6 +97,8 @@ const run = async () => {
     console.log(testMedication.subject.reference)
     const searchResultP = await searchPatients("131264020")
     //console.log(searchResultP[0])
+    const searchResultPbd = await searchPatientsBirthdate("1965-03-25")
+    console.log(searchResultPbd)
     const searchResultM = await searchMedicationForPatients("131264020")
     //console.log(searchResultM[0])
 
