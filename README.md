@@ -48,3 +48,6 @@ Touchpoint: Schmerzmedikation wird verordnet, Medikationshistorie abgeglichen.
 
 ### Patient resource:
 - **Patient**: https://hl7.org/fhir/patient.html
+
+### Guide to read FHIR implementation guidelines:
+- https://build.fhir.org/ig/FHIR/ig-guidance/readingIgs.html#table-views
